@@ -5,12 +5,16 @@ import { nextApi } from "../config/index";
 
 type Context = {
   user: {
-    username: string;
+    id_user: string;
+    login: string;
     email: string;
-    password: string;
+    status: number;
+    roles: [ { id_role: number, unique_key: string, description: string } ]
+    vendor: { id_vendor: string, CNPJ: string, description: string }
   };
   error: any;
-  register: (user: any) => any;
+  setError: (error: any) => any;
+  loading: boolean;
   logIn: (user: any) => any;
   logOut: () => any;
 };
@@ -20,42 +24,15 @@ const UserContext = createContext({} as Context);
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  //useEffect(() => checkUserLoggedIn(), []);
-
-  // Register user
-  const register = async (user: {
-    username: string;
-    email: string;
-    password: string;
-  }) => {
-    const config: AxiosRequestConfig = {
-      url: "api/register",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: {
-        username: user.username,
-        email: user.email,
-        password: user.password,
-      },
-    };
-
-    const res = await nextApi.request(config).catch((e) => {
-      setError(e.response.data.message);
-      setError(null);
-    });
-
-    if (res) {
-      setUser(res.data.user);
-      router.push("/");
-    }
-  };
+  useEffect(() => checkUserLoggedIn(), []);
 
   //Login user
-  const logIn = async (user: { email: string; password: string }) => {
+  const logIn = async (user: { login: string; password: string }) => {
+    setLoading(true)
+    setError(null)
     const config: AxiosRequestConfig = {
       url: "api/login",
       method: "POST",
@@ -63,15 +40,16 @@ export const UserProvider = ({ children }) => {
         "Content-Type": "application/json",
       },
       data: {
-        identifier: user.email,
+        login: user.login,
         password: user.password,
       },
     };
 
     const res = await nextApi.request(config).catch((e: any) => {
       setError(e.response.data.message);
-      setError(null);
     });
+
+    setLoading(false);
 
     if (res) {
       setUser(res.data.user);
@@ -104,7 +82,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, error, register, logIn, logOut }}>
+    <UserContext.Provider value={{ user, error, setError, loading, logIn, logOut }}>
       {children}
     </UserContext.Provider>
   );
