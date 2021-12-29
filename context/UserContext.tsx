@@ -7,9 +7,10 @@ type Context = {
   user: {
     id_user: string;
     login: string;
+    name: string;
     email: string;
     status: number;
-    roles: [ { id_role: number, unique_key: string, description: string } ]
+    roles: [ { id_role: number, unique_key: string, description: string, link: string, id_role_child: number } ]
     vendor: { id_vendor: string, CNPJ: string, description: string }
   };
   error: any;
@@ -72,7 +73,7 @@ export const UserProvider = ({ children }) => {
       const res = await nextApi.get("api/user");
       if (res) {
         setUser(res.data.user);
-        router.push("/account/dashboard");
+        router.push("/");
       } else {
         setUser(null);
       }

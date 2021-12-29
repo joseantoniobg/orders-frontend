@@ -28,16 +28,18 @@ export default function LoginPage() {
 
   return (
     <Layout title='User Login'>
-      <div className={styles.auth}>
-        <Error error={error} setError={setError} />
-        <h1>
-          <FaUser /> Log In
-        </h1>
-        <form onSubmit={handleSubmit}>
-           <Input label="Login" name='login' type='text' {...formFields.login} />
-           <Input label="Senha" name='password' type='password' {...formFields.password} />
-           <Button type='submit' value='Entrar' />
-        </form>
+      <div className={styles.content}>
+        <div className={styles.auth}>
+          <Error error={error} setError={setError} />
+          <h1>
+            <FaUser /> Log In
+          </h1>
+          <form onSubmit={handleSubmit}>
+            <Input label="Login" name='login' type='text' {...formFields.login} />
+            <Input label="Senha" name='password' type='password' {...formFields.password} />
+            <Button type='submit' value='Entrar' />
+          </form>
+        </div>
       </div>
     </Layout>
   )

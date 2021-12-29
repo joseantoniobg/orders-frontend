@@ -9,46 +9,24 @@ export default function Header() {
   const {user, logOut} = useContext(UserContext);
 
   return (
-    <header className={styles.header}>
-      {user && <><div className={styles.logo}>
+    user && <header className={styles.header}>
+      <div className={styles.logo}>
         <Link href='/'>
-          <a>DJ Events</a>
+          <a>Pedidos</a>
         </Link>
       </div>
       <nav>
         <ul>
           <li>
-            <Link href='/events'>
-              <a>Events</a>
+            Bem vindo, {user.name}!
+          </li>
+          <li>
+            <Link href='/'>
+              <button onClick={() => logOut()} className='btn-secondary btn-icon'><FaSignOutAlt /> Log Out</button>
             </Link>
           </li>
-          {user ?
-          <>
-            <li>
-              Bem vindo, {user.login}
-            </li>
-            <li>
-              <Link href='/events/add'>
-                <a>Add New Event</a>
-              </Link>
-            </li>
-            <li>
-              <Link href='/'>
-                <button onClick={() => logOut()} className='btn-secondary btn-icon'><FaSignOutAlt /> Log Out</button>
-              </Link>
-            </li>
-          </> :
-          <>
-            <li>
-              <Link href='/account/login'>
-                <a className='btn-secondary btn-icon'><FaSignInAlt /> Login</a>
-              </Link>
-            </li>
-          </>}
-
-
         </ul>
-      </nav></>}
+      </nav>
     </header>
   )
 }
