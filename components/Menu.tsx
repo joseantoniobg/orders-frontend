@@ -4,8 +4,7 @@ import { useState, useContext } from 'react';
 import UserContext from '../context/UserContext';
 import Link from 'next/link';
 
-const Menu = () => {
-  const [show, setShow] = useState(true);
+const Menu = ({ show, setShow }) => {
   const { user } = useContext(UserContext);
 
   return (
