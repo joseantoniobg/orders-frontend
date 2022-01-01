@@ -1,27 +1,56 @@
 .table {
   border-spacing: 0;
-  border: 1px solid rgb(175, 175, 175);
-  border-radius: 1rem;
-  margin-top: 1rem;
+  border: 1px solid black;
+  border-radius: 5px;
 
-  tr {
-    &:last-child {
-      td {
+  .thead {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 250px;
+  }
+
+  .tr {
+    :last-child {
+      .td {
         border-bottom: 0;
       }
     }
+    border-bottom: 1px solid black;
   }
 
-  th,
-  td {
+  .th,
+  .td {
     margin: 0;
     padding: 0.5rem;
-    border-bottom: 1px solid rgb(150, 150, 150);
-    border-right: 1px solid rgb(189, 189, 189);
-    padding: 0.5rem 1rem;
+    border-right: 1px solid black;
+    position: relative;
 
-    &:last-child {
+    :last-child {
       border-right: 0;
+    }
+
+    .resizer {
+      right: 0;
+      background: rgb(97, 97, 97);
+      margin: 3px;
+      width: 6px;
+      height: 80%;
+      border-radius: 50px;
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      touch-action: none;
+
+      &.isResizing {
+        background: rgb(65, 65, 65);
+        margin: 0;
+        height: 100%;
+      }
     }
   }
 }
@@ -52,4 +81,10 @@
   span {
     margin: 0 0.5rem;
   }
+}
+
+.count {
+  margin-top: 1rem;
+  margin-left: 1rem;
+  font-size: 1.6rem;
 }

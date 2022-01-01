@@ -1,8 +1,9 @@
 import React from 'react';
-import { useTable, useSortBy, useGlobalFilter, useAsyncDebounce, usePagination } from 'react-table';
+import { useTable, useSortBy, useGlobalFilter, useAsyncDebounce, usePagination, useRowSelect, useFlexLayout, useResizeColumns } from 'react-table';
 import styles from '../styles/Table.module.scss';
+import { useEffect } from 'react';
 
-const Table = ({ headers, content }) => {
+const Table = ({ headers, content, checks = false, selectedRows=null }) => {
    const data = React.useMemo(
      () => [...content],
      [content]
@@ -12,6 +13,31 @@ const Table = ({ headers, content }) => {
      () => [...headers],
      [headers]
    )
+
+   const IndeterminateCheckbox = React.forwardRef(
+    ({ indeterminate, ...rest }, ref) => {
+      const defaultRef = React.useRef()
+      const resolvedRef = ref || defaultRef
+      React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate
+      }, [resolvedRef, indeterminate])
+      return (
+        <>
+          <input type="checkbox" ref={resolvedRef} {...rest} />
+        </>
+      )
+    }
+  )
+
+    const defaultColumn = React.useMemo(
+    () => ({
+      // When using the useFlexLayout:
+      minWidth: 25, // minWidth is only used as a limit for resizing
+      width: 25, // width is used for both the flex-basis and flex-grow
+      maxWidth: 1000, // maxWidth is only used as a limit for resizing
+    }),
+    []
+  )
 
    const {
     getTableProps,
@@ -32,17 +58,52 @@ const Table = ({ headers, content }) => {
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    selectedFlatRows,
+    state: { pageIndex, pageSize, selectedRowIds },
   } = useTable(
     {
       columns,
       data,
+      defaultColumn,
       initialState: { pageIndex: 0 },
     },
     useGlobalFilter,
     useSortBy,
-    usePagination
+    usePagination,
+    useResizeColumns,
+    useRowSelect,
+    useFlexLayout,
+    hooks => {
+        if (checks) {
+          hooks.visibleColumns.push(columns => [
+            {
+              id: 'selection',
+              Header: ({ getToggleAllPageRowsSelectedProps }) => {
+                return (
+                <div>
+                  <IndeterminateCheckbox {...getToggleAllPageRowsSelectedProps()} />
+                </div>
+              )},
+              Cell: ({ row }) => (
+                <div>
+                  <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                </div>
+              ),
+            },
+            ...columns,
+        ])
+      }
+
+      hooks.useInstanceBeforeDimensions.push(({ headerGroups }) => {
+        if (checks) {
+          const selectionGroupHeader = headerGroups[0].headers[0]
+          selectionGroupHeader.canResize = false
+        }
+      })
+    }
   )
+
+  useEffect(() => { if (selectedRows) { selectedRows.current = selectedFlatRows; } }, [selectedRows, selectedFlatRows])
 
 function GlobalFilter({
 preGlobalFilteredRows,
@@ -77,14 +138,12 @@ setGlobalFilter,
           globalFilter={state.globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
-      <table className={styles.table} {...getTableProps()}>
-        <thead>
+      <div className={styles.table} {...getTableProps()}>
+        <div>
           {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <div key={headerGroup.getHeaderGroupProps().key} {...headerGroup.getHeaderGroupProps()} className={styles.tr}>
               {headerGroup.headers.map(column => (
-                // Add the sorting props to control sorting. For this example
-                // we can add them into the header props
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                <div key={column.getHeaderProps(column.getSortByToggleProps()).key} {...column.getHeaderProps(column.getSortByToggleProps())} className={styles.th}>
                   {column.render('Header')}
                   {/* Add a sort direction indicator */}
                   <span>
@@ -94,27 +153,35 @@ setGlobalFilter,
                         : ' 🔼'
                       : ''}
                   </span>
-                </th>
+                  {column.canResize && (
+                  <div
+                    {...column.getResizerProps()}
+                    className={`${styles.resizer} ${
+                      column.isResizing ? styles.isResizing : ''
+                    }`}
+                  />
+                )}
+                </div>
               ))}
-            </tr>
+            </div>
           ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
+        </div>
+        <div className={styles.tbody} {...getTableBodyProps()}>
           {page.map(
             (row, i) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <div className={styles.tr} key={row.getRowProps().key} {...row.getRowProps()}>
                   {row.cells.map(cell => {
                     return (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      <div className={styles.td} key={cell.getCellProps().key} {...cell.getCellProps()}>{cell.render('Cell')}</div>
                     )
                   })}
-                </tr>
+                </div>
               )}
           )}
-        </tbody>
-      </table>
+        </div>
+      </div>
       <div className={styles.pagination}>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
@@ -158,6 +225,7 @@ setGlobalFilter,
             </option>
           ))}
         </select>
+        {checks && <div className={styles.count}>Selecionados {selectedFlatRows.length} itens</div>}
       </div>
     </>
   )
