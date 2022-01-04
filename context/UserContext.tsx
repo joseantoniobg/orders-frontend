@@ -73,7 +73,6 @@ export const UserProvider = ({ children }) => {
       const res = await nextApi.get("api/user");
       if (res) {
         setUser(res.data.user);
-        router.push("/");
       } else {
         setUser(null);
       }

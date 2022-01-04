@@ -64,7 +64,7 @@ const Table = ({ headers, content, checks = false, selectedRows=null }) => {
     {
       columns,
       data,
-      defaultColumn,
+      //defaultColumn,
       initialState: { pageIndex: 0 },
     },
     useGlobalFilter,

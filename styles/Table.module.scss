@@ -2,16 +2,11 @@
   border-spacing: 0;
   border: 1px solid black;
   border-radius: 5px;
-
-  .thead {
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+  overflow-y: scroll;
 
   .tbody {
-    overflow-y: scroll;
     overflow-x: hidden;
-    height: 250px;
+    height: 300px;
   }
 
   .tr {
@@ -29,6 +24,7 @@
     padding: 0.5rem;
     border-right: 1px solid black;
     position: relative;
+    word-wrap: break-word;
 
     :last-child {
       border-right: 0;
@@ -38,17 +34,19 @@
       right: 0;
       background: rgb(97, 97, 97);
       margin: 3px;
-      width: 6px;
+      width: 10px;
       height: 80%;
       border-radius: 50px;
+      border: 3px solid #fff;
       position: absolute;
       top: 0;
       z-index: 1;
       touch-action: none;
 
       &.isResizing {
-        background: rgb(65, 65, 65);
         margin: 0;
+        margin-right: 3px;
+        background: rgb(65, 65, 65);
         height: 100%;
       }
     }

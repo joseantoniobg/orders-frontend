@@ -4,9 +4,9 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import UserContext from '../context/UserContext'
 import LoginPage from './account/login';
 import Table from '../components/Table';
+import StandardPage from '../components/StandardPage';
 
 const Home: NextPage = () => {
-  const { user } = useContext(UserContext);
 
   const content = [
        {
@@ -37,7 +37,7 @@ const Home: NextPage = () => {
   let selectedRows = useRef();
 
   return (
-        user ? <Layout><Table content={content} headers={headers} /><Table content={content} headers={headers} checks selectedRows={selectedRows} /></Layout> : <LoginPage/>
+        <StandardPage><Table content={content} headers={headers} /><Table content={content} headers={headers} checks selectedRows={selectedRows} /></StandardPage>
   )
 }
 

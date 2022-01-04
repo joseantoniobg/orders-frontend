@@ -1,3 +1,4 @@
+import cookie from "cookie";
 export const validateForm = (formFields) => {
   let validForm = true;
   Object.values(formFields).forEach((formField: any) => {
@@ -5,3 +6,7 @@ export const validateForm = (formFields) => {
   });
   return validForm;
 };
+
+export function parseCookies(req) {
+  return cookie.parse(req ? (req.headers ? req.headers.cookie || "" : "") : "");
+}
