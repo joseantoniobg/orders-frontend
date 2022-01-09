@@ -10,3 +10,8 @@ export const validateForm = (formFields) => {
 export function parseCookies(req) {
   return cookie.parse(req ? (req.headers ? req.headers.cookie || "" : "") : "");
 }
+
+export function getNumbersFromString(str: string): string {
+  const res = str.replace(/\D/g, "");
+  return res;
+}
