@@ -1,9 +1,11 @@
+@import "variables";
+
 .btn {
   padding: 1rem;
   margin-top: 2rem;
   width: 100%;
   font-size: 1.7rem;
-  background-color: rgb(252, 180, 113);
+  background-color: $color-primary;
   border-color: transparent;
   border-radius: 1000px;
   transition: 0.2s;
@@ -12,7 +14,7 @@
     transform: translate(-4px, -4px);
     cursor: pointer;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    background-color: rgb(240, 135, 37);
+    background-color: darken($color-primary, 10%);
   }
 }
 
