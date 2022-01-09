@@ -32,9 +32,3 @@ export default function Layout({title, keywords, description, children}) {
     </div>
   )
 }
-
-Layout.defaultProps = {
-  title: 'Sistema de Pedidos',
-  keywords: 'pedidos, restaurantes, ponta a ponta, processos',
-  description: 'Controle seu negócio de ponta a ponta'
-}
