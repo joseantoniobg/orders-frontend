@@ -18,6 +18,7 @@ type Context = {
   loading: boolean;
   logIn: (user: any) => any;
   logOut: () => any;
+  setLoading: (boolean) => void;
 };
 
 const UserContext = createContext({} as Context);
@@ -78,11 +79,15 @@ export const UserProvider = ({ children }) => {
       }
     } catch {
       setUser(null);
+    } finally {
+      if (!user) {
+        router.push("/");
+      }
     }
   };
 
   return (
-    <UserContext.Provider value={{ user, error, setError, loading, logIn, logOut }}>
+    <UserContext.Provider value={{ user, error, setError, loading, logIn, logOut, setLoading }}>
       {children}
     </UserContext.Provider>
   );
