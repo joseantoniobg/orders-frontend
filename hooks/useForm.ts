@@ -1,4 +1,5 @@
 import React from "react";
+import { getNumbersFromString, validateForm } from "../functions/functions";
 
 const validations = {
   email: {
@@ -14,12 +15,18 @@ const validations = {
   // },
 };
 
-const useForm = (type, required) => {
-  const [value, setValue] = React.useState("");
+const useForm = (
+  type: string,
+  required: boolean,
+  initialValue: string = ""
+) => {
+  const [value, setValue] = React.useState(
+    type === "money" ? initialValue.replace(".", ",") : initialValue
+  );
   const [error, setError] = React.useState(null);
 
   function validate(value) {
-    if (type === false) return true;
+    if (!type) return true;
     if (value.length === 0 && required) {
       setError("Preencha um valor");
       return false;
@@ -34,11 +41,31 @@ const useForm = (type, required) => {
 
   function onChange({ target }) {
     if (error) validate(target.value);
+    if (type === "money") {
+      target.value = getNumbersFromString(target.value);
+      if (target.value.length >= 3) {
+        target.value =
+          target.value.substr(0, target.value.length - 2) +
+          "," +
+          target.value.substr(target.value.length - 2);
+        if (
+          target.value.substr(0, 2) !== "0," &&
+          target.value.substr(0, 1) === "0"
+        ) {
+          target.value = target.value.substr(1);
+        }
+      } else {
+        target.value =
+          "0," + "0".repeat(2 - target.value.length) + target.value;
+      }
+    }
+
     setValue(target.value);
   }
 
   return {
     value,
+    moneyValue: value.replace(",", "."),
     setValue,
     onChange,
     error,
