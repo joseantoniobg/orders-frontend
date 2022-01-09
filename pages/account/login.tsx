@@ -27,7 +27,7 @@ export default function LoginPage() {
   }
 
   return (
-    <Layout title='User Login'>
+    <Layout title='User Login' keywords="login" description="Login page">
       <div className={styles.content}>
         <div className={styles.auth}>
           <Error error={error} setError={setError} />
