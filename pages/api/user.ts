@@ -1,6 +1,7 @@
 import cookie from "cookie";
-import { api } from "../../config/index";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { AxiosRequestConfig } from "axios";
+import { api } from "../../config/index";
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default async (req: NextApiRequest, res: NextApiResponse<any>) => {
@@ -12,15 +13,16 @@ export default async (req: NextApiRequest, res: NextApiResponse<any>) => {
 
     const { token } = cookie.parse(req.headers.cookie);
 
-    const strapiRes = await api
-      .get("users/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .catch((e) => {
-        res.status(403).json({ message: "User forbidden" });
-      });
+    const params: AxiosRequestConfig = {
+      url: "users/me",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const strapiRes = await api.request(params).catch((e) => {
+      res.status(403).json({ message: "User forbidden" });
+    });
 
     if (strapiRes) res.status(200).json({ user: strapiRes.data });
   } else {
