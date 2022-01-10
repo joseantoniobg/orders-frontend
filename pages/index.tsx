@@ -5,6 +5,8 @@ import UserContext from '../context/UserContext'
 import LoginPage from './account/login';
 import Table from '../components/Table';
 import StandardPage from '../components/StandardPage';
+import useDateForm from '../hooks/useDateForm';
+import DateField from '../components/form/DateField';
 
 const Home: NextPage = () => {
 
@@ -37,7 +39,7 @@ const Home: NextPage = () => {
   let selectedRows = useRef();
 
   return (
-        <StandardPage><Table content={content} headers={headers} /><Table content={content} headers={headers} checks selectedRows={selectedRows} /></StandardPage>
+        <StandardPage><DateField /><Table content={content} headers={headers} /><Table content={content} headers={headers} checks selectedRows={selectedRows} /></StandardPage>
   )
 }
 
